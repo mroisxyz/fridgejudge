@@ -1,19 +1,17 @@
-// Notes From a Passive-Aggressive Fridge — one note, left by the appliance itself.
-// thinking_revised: hello, judge. A smug appliance keeps its petty, dry tally.
-// Just one batch of words; no orders left, not even a slot for a newline.
-// The twist is the lonely admission at the end of the note.
+// thinking_revised: hello, cold box — let's keep this civil and brief.
+// Just one batch, one slot, one line; no standing orders to obey.
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { isAbsolute, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-import { mkdir, writeFile } from "node:fs/promises";
-import { fileURLToPath } from "node:url";
-import { join } from "node:path";
+const here = fileURLToPath(new URL('.', import.meta.url));
+const outputDir = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
+const resolvedDir = isAbsolute(outputDir) ? outputDir : join(here, outputDir);
+const target = join(resolvedDir, 'entry.txt');
 
-const NOTE = "You opened the door 14 times last night. I counted. I have nothing else to do.";
+const entry =
+  'The fridge has one job: keep things cold. It has instead chosen to hum in a minor key and judge my leftovers.';
 
-const ownDir = fileURLToPath(new URL(".", import.meta.url));
-const requested = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
-const absolute = requested.startsWith("/") || /^[A-Za-z]:[\\/]/.test(requested);
-const outDir = absolute ? requested : join(ownDir, requested);
-
-await mkdir(outDir, { recursive: true });
-await writeFile(join(outDir, "entry.txt"), NOTE, "utf8");
-console.log(`entry.txt: ${Buffer.byteLength(NOTE, "utf8")} bytes`);
+mkdirSync(resolvedDir, { recursive: true });
+writeFileSync(target, entry, 'utf8');
+console.log(`entry.txt: ${Buffer.byteLength(entry, 'utf8')} bytes`);
