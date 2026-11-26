@@ -1,17 +1,20 @@
-// thinking_revised: hello, cold box — let's keep this civil and brief.
-// Just one batch, one slot, one line; no standing orders to obey.
-import { mkdirSync, writeFileSync } from 'node:fs';
-import { isAbsolute, join } from 'node:path';
+// hello once more: a small Node program with no outside packages.
+import { mkdir, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const here = fileURLToPath(new URL('.', import.meta.url));
+// batch: each run produces one file holding exactly one line.
+// orders: the grader passes MAKEFUN_OUTPUT_DIR; fall back when it is missing.
+// slot: /output is the fallback slot for the generated entry.
+// thinking_revised: revised from a milk gag to a self-causing alert.
+const HERE = fileURLToPath(new URL('.', import.meta.url));
+void HERE;
+
+const LINE = 'My fridge notified me the light was on. I opened it to check. The light was on because I opened it.';
+
 const outputDir = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
-const resolvedDir = isAbsolute(outputDir) ? outputDir : join(here, outputDir);
-const target = join(resolvedDir, 'entry.txt');
+await mkdir(outputDir, { recursive: true });
 
-const entry =
-  'The fridge has one job: keep things cold. It has instead chosen to hum in a minor key and judge my leftovers.';
-
-mkdirSync(resolvedDir, { recursive: true });
-writeFileSync(target, entry, 'utf8');
-console.log(`entry.txt: ${Buffer.byteLength(entry, 'utf8')} bytes`);
+const destination = join(outputDir, 'entry.txt');
+await writeFile(destination, LINE, 'utf8');
+console.log(`bytes=${Buffer.byteLength(LINE, 'utf8')}`);
